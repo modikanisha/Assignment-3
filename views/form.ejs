@@ -1,0 +1,118 @@
+<%- include('layout/header')%>
+
+<body>
+    <form name="myform" method="Post" onsubmit="return formSubmit();" action="">
+        <img src="./image/image1.jpeg">
+        <div class="form">
+            <div class="left-div">
+                <h3>Personal Details</h3>
+                <div class="textbox-div">
+                    <p>Name <span class="req">*</span></p>
+                    <input type="text" name="name" id="name" placeholder="Name" class="textbox" />
+
+                    <p>Address<span class="req">*</span></p>
+                    <input type="text" name="address" placeholder="Address" class="textbox" />
+
+                    <p>City <span class="req">*</span></p>
+                    <input type="text" name="city" placeholder="City" class="textbox" />
+
+                    <p>Province <span class="req">*</span></p>
+
+
+                    <select name="selectpicker" class="select-dropdown">
+                        <optgroup label="Select Table">
+                            <%if(locals.provinceArray){%>
+                            <% provinceArray.forEach(function(province) {%>
+                            <option name="<%=province.province%>" value="<%=province.province%>"><%=province.name%>
+                            </option>
+                            <%})%>
+                            <% }%>
+                        </optgroup>
+                    </select>
+
+
+                    <p>Email Address<span class="req">*</span> </p>
+                    <input type="text" name="email" placeholder="Email Address" class="textbox" />
+
+                    <p>Phone Number<span class="req">*</span></p>
+                    <input type="text" name="phoneNumber" placeholder="Phone Number" class="textbox" />
+                </div>
+            </div>
+            <div class="right-div">
+                <h3>Product Details</h3>
+
+                <%if(locals.productArray){%>
+                <div class="textbox-div">
+                    <% productArray.forEach(function(product) {%>
+                    <p><span name="label"><%=product.name%></span><span class="item-rate"
+                            name="product1Rate"><%=product.rate%></span> <span class="item-rate">$</span></p>
+                    <input type="text" name="<%=product.id%>" class="textbox" />
+                    <%})%>
+                </div>
+                <% }%>
+            </div>
+        </div>
+        <input type="submit" value="Submit" class="btn">
+    </form>
+
+    <%if(locals.errors){%>
+    <div class="result-form">
+        <ul>
+            <% errors.forEach(function(error){%>
+            <li class="req"><%= error.msg%></li>
+            <%})%>
+        </ul>
+    </div>
+    <%}%>
+       <%if(locals.pageData != null && pageData.finalTotal < 10){%>
+    <div class="result-form">
+        <ul>
+            <li class="req"> Please purchase products worth $10 or more to continue.</li>
+        </ul>
+    </div>
+    <%}%>
+  <% if(locals.pageData != null && pageData.finalTotal >= 10){%>
+    <div class="result-form">
+        <div class="margin-top  receipt-inner-div" id="receipt-div">
+            <span class='receipt-label'> Thank you for your order </span> </br>
+            <div id="receipt-inner-div" class="margin-top">
+                <h4 class='receipt-inner-label'>Customer Details: </h4>
+                <span> <strong>Name :</strong> <%= pageData.name %></span></br>
+                <span> <strong>Email Address :</strong> <%= pageData.email %></span></br>
+                <span><strong> Phone Number :</strong> <%= pageData.phoneNumber %> </span></br>
+                <span><strong> Address :</strong> <%= pageData.address %> </span></br>
+                <span><strong> City :</strong> <%= pageData.city %> </span></br>
+                <span><strong> Province :</strong> <%= pageData.province %> </span></br>
+
+                <h4 class='receipt-inner-label'> Please find your final receipt :</h4>
+                <table class='tbl margin-top' border="1">
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                    </tr>
+                    <%selectedProducts.forEach(function(product){%>
+                    <tr>
+                        <td><%=product.name%></td>
+                        <td><%=product.quantity%></td>
+                        <td>$<%=product.rate%></td>
+                        <td class="algn-right">$<%=product.total%></td>
+                    </tr>
+                    <%})%>
+                    <tr>
+                        <td colspan="3"> Tax @ <%=pageData.province%> is <strong><%=pageData.tax%></strong></td>
+                        <td class="algn-right">$<%=pageData.taxAmount%></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"> Final Amount</td>
+                        <td class="algn-right">$<%=pageData.finalTotal%></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <%}%>
+    
+</body>
+<%- include('layout/footer')%>
